@@ -242,6 +242,16 @@ The credential file is looked up in this order, and only the first one found is 
 
 Both formats use the same `machine` / `login` / `password` tokens. As with curl, a `default` entry applies to every host, which means it is also sent to `beta.quicklisp.org` and `github.com` — prefer an explicit `machine` line.
 
+Release archives of a `dist` source are downloaded by the bundled Quicklisp client rather than by Qlot itself, which is why the fetcher it uses matters:
+
+| Fetcher | Credentials |
+| --- | --- |
+| Lisp (used when Qlot is installed as a bundle) | all three sources above |
+| curl | `$NETRC`, else `~/.netrc` |
+| wget | `~/.netrc` only, since wget has no equivalent of `--netrc-file` |
+
+So on a machine that falls back to curl or wget, decrypt the credentials into the file named by `$NETRC`, or keep a plaintext `~/.netrc`.
+
 ## Tutorial
 
 ### Start using Qlot
