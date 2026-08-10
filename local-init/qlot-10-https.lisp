@@ -75,7 +75,9 @@ fetcher, or can be decrypted to the file named by $NETRC."
   (declare (ignore args))
   (let ((url (https-of url)))
     (with-logging (url file :quietly quietly)
-      (uiop:run-program (append (list "curl" "-sSL")
+      ;; --fail, so that an HTTP error is a failed subprocess rather than a
+      ;; zero-length file reported below as a status 200.
+      (uiop:run-program (append (list "curl" "-sSLf")
                                 (netrc-arguments)
                                 (list url "-o" (uiop:native-namestring file)))
                         :error-output :interactive)))
