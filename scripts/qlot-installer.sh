@@ -3,7 +3,7 @@
 set -eu
 
 VERSION=${VERSION:-heads/master}
-QLOT_ARCHIVE=${QLOT_ARCHIVE:-https://github.com/fukamachi/qlot/archive/refs/$VERSION.tar.gz}
+QLOT_ARCHIVE=${QLOT_ARCHIVE:-https://github.com/m-creations/qlot/archive/refs/$VERSION.tar.gz}
 
 # Check if a directory is in PATH
 check_in_path() {
@@ -124,7 +124,7 @@ setup_success=$?
 
 if [ "$setup_success" -ne 0 ]; then
   errmsg "Setup process is failed. See '$install_log_path' for the detailed logs."
-  errmsg "If it can be a bug, please report an issue at https://github.com/fukamachi/qlot/issues."
+  errmsg "If it can be a bug, please report an issue at https://github.com/m-creations/qlot/issues."
   exit "$setup_success"
 fi
 
@@ -133,7 +133,7 @@ install_success=$?
 
 if [ "$install_success" -ne 0 ]; then
   errmsg "Install process is failed. See '$install_log_path' for the detailed logs."
-  errmsg "If it can be a bug, please report an issue at https://github.com/fukamachi/qlot/issues."
+  errmsg "If it can be a bug, please report an issue at https://github.com/m-creations/qlot/issues."
   exit "$install_success"
 fi
 

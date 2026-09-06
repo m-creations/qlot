@@ -29,7 +29,7 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: |
-            fukamachi/qlot
+            mcreations/qlot
           tags: |
             type=ref,event=branch
       - name: Build and publish
