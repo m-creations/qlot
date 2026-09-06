@@ -17,9 +17,10 @@
 ;;
 ;; Credentials for private dists
 ;;
-;; Sources are tried in order: the file named by $NETRC, then ~/.authinfo.gpg,
-;; then ~/.netrc. Both formats use the same 'machine/login/password' tokens, so
-;; a single parser covers them.
+;; Entries are collected from all available sources: the file named by $NETRC,
+;; ~/.authinfo.gpg, and ~/.netrc; on a host match the earlier source wins. Both
+;; formats use the same 'machine/login/password' tokens, so a single parser
+;; covers them.
 
 (defun whitespacep (char)
   (member char '(#\Space #\Tab)))
@@ -104,13 +105,17 @@ MACHINE is NIL for the 'default' entry, which matches any host."
   (let ((netrc (uiop:getenvp "NETRC"))
         (authinfo.gpg (merge-pathnames ".authinfo.gpg" (user-homedir-pathname)))
         (netrc-file (merge-pathnames ".netrc" (user-homedir-pathname))))
-    (cond (netrc
-           (and (uiop:file-exists-p netrc)
-                (uiop:read-file-string netrc)))
-          ((uiop:file-exists-p authinfo.gpg)
-           (decrypt-file authinfo.gpg))
-          ((uiop:file-exists-p netrc-file)
-           (uiop:read-file-string netrc-file)))))
+    (with-output-to-string (out)
+      (dolist (text (list (and netrc
+                               (uiop:file-exists-p netrc)
+                               (uiop:read-file-string netrc))
+                          (and (uiop:file-exists-p authinfo.gpg)
+                               (decrypt-file authinfo.gpg))
+                          (and (uiop:file-exists-p netrc-file)
+                               (uiop:read-file-string netrc-file))))
+        (when text
+          (write-string text out)
+          (terpri out))))))
 
 (defvar *netrc-entries* :unread
   "Cache of the parsed credential file. Decryption may prompt for a passphrase,
